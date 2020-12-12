@@ -1,0 +1,56 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="88dp"
+    xmlns:app="http://schemas.android.com/apk/res-auto">
+
+    <ImageView
+        android:id="@+id/podcast_recycler_item_artwork"
+        android:layout_width="64dp"
+        android:layout_height="64dp"
+        android:layout_centerVertical="true"
+        android:layout_marginStart="16dp"
+        />
+
+    <TextView
+        android:id="@+id/podcast_recycler_item_position"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:textStyle="bold"
+        android:textSize="16sp"
+        android:layout_alignTop="@id/podcast_recycler_item_artwork"
+        android:layout_toRightOf="@+id/podcast_recycler_item_artwork"
+        android:layout_marginStart="16dp"
+        android:layout_marginTop="8dp"
+        />
+
+    <TextView
+        android:id="@+id/podcast_recycler_item_title"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:textStyle="bold"
+        android:textSize="16sp"
+        android:layout_alignTop="@id/podcast_recycler_item_position"
+        android:layout_toRightOf="@+id/podcast_recycler_item_position"
+        android:layout_marginStart="16dp"
+        android:layout_marginEnd="32dp"
+        android:maxLines="1"
+        android:ellipsize="end"
+        />
+
+    <TextView
+        android:id="@+id/podcast_recycler_item_artist"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginStart="16dp"
+        android:layout_marginTop="8dp"
+        android:textSize="13sp"
+        android:layout_toRightOf="@+id/podcast_recycler_item_position"
+        android:layout_below="@id/podcast_recycler_item_position"
+        android:layout_marginRight="16dp"
+        android:maxLines="1"
+        android:ellipsize="end"
+        />
+
+</RelativeLayout>

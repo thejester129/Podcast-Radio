@@ -1,0 +1,67 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="104dp"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:background="@color/white"
+    android:layout_marginTop="4dp"
+    android:layout_marginBottom="4dp"
+    android:elevation="4dp">
+
+    <ImageView
+        android:layout_width="match_parent"
+        android:layout_height="1dp"
+        android:src="@color/black"
+        />
+
+    <TextView
+        android:id="@+id/podcast_episode_recycler_item_title"
+        android:layout_width="match_parent"
+        android:layout_marginRight="72dp"
+        android:layout_marginTop="16dp"
+        android:layout_height="wrap_content"
+        android:textSize="15sp"
+        android:textStyle="bold"
+        android:layout_marginLeft="16dp"
+        />
+
+    <ImageView
+        android:id="@+id/podcast_episode_recycler_item_play_button"
+        android:layout_width="48dp"
+        android:layout_height="48dp"
+        android:layout_centerVertical="true"
+        android:layout_alignParentEnd="true"
+        app:tint="@color/colorPrimaryDark"
+        android:layout_marginRight="8dp"
+        android:src="@drawable/ic_play_circle"
+        />
+
+    <ImageView
+        android:id="@+id/podcast_episode_recycler_item_pause_button"
+        android:layout_width="48dp"
+        android:layout_height="48dp"
+        android:layout_centerVertical="true"
+        android:layout_alignParentEnd="true"
+        android:layout_marginRight="8dp"
+        app:tint="@color/colorPrimaryDark"
+        android:src="@drawable/ic_pause_circle"
+        />
+
+    <TextView
+        android:id="@+id/podcast_episode_recycler_item_pub_date"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_alignParentBottom="true"
+        android:layout_marginBottom="16dp"
+        android:layout_marginLeft="16dp"
+        />
+
+    <ImageView
+        android:layout_width="match_parent"
+        android:layout_height="1dp"
+        android:layout_alignParentBottom="true"
+        android:src="@color/black"
+        />
+
+
+</RelativeLayout>

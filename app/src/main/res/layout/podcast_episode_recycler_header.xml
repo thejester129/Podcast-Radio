@@ -1,0 +1,113 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    android:background="@color/white"
+    android:layout_marginTop="4dp"
+    android:layout_marginBottom="4dp"
+    android:elevation="4dp"
+    android:layout_width="match_parent"
+    android:layout_height="200dp">
+
+    <ImageView
+        android:layout_width="match_parent"
+        android:layout_height="1dp"
+        android:src="@color/black"
+        />
+
+    <ImageView
+        android:id="@+id/podcast_episode_recycler_header_artwork"
+        android:layout_width="128dp"
+        android:layout_height="128dp"
+        android:layout_marginTop="16dp"
+        android:layout_marginLeft="16dp"
+        />
+
+    <TextView
+        android:id="@+id/podcast_episode_recycler_header_title"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_alignTop="@id/podcast_episode_recycler_header_artwork"
+        android:layout_toRightOf="@id/podcast_episode_recycler_header_artwork"
+        android:layout_marginLeft="32dp"
+        android:layout_marginRight="32dp"
+        android:textSize="24sp"
+        android:textStyle="bold"
+        android:text="@{podcast.trackName}"
+        />
+
+    <TextView
+        android:id="@+id/podcast_episode_recycler_header_artist"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_alignBottom="@id/podcast_episode_recycler_header_artwork"
+        android:layout_toRightOf="@id/podcast_episode_recycler_header_artwork"
+        android:layout_marginLeft="32dp"
+        android:layout_marginRight="32dp"
+        android:layout_marginTop="16dp"
+        android:textSize="17sp"
+        android:text="@{podcast.artistName}"
+        />
+
+    <ImageView
+        android:id="@+id/podcast_episode_recycler_header_genre_background"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:background="@color/colorPrimaryDark"
+        android:layout_alignStart="@id/podcast_episode_recycler_header_genre"
+        android:layout_alignEnd="@id/podcast_episode_recycler_header_genre"
+        android:layout_alignTop="@id/podcast_episode_recycler_header_genre"
+        android:layout_alignBottom="@id/podcast_episode_recycler_header_genre"
+        />
+
+    <TextView
+        android:id="@+id/podcast_episode_recycler_header_genre"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_below="@id/podcast_episode_recycler_header_artwork"
+        android:paddingLeft="8dp"
+        android:paddingRight="8dp"
+        android:paddingTop="4dp"
+        android:paddingBottom="4dp"
+        android:layout_marginTop="16dp"
+        android:layout_marginLeft="16dp"
+        android:textColor="@color/white"
+        android:textStyle="bold"
+        android:text="@{podcast.primaryGenreName}"
+        />
+
+    <ImageView
+        android:id="@+id/podcast_episode_recycler_header_country_background"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:background="@android:color/holo_red_light"
+        android:layout_alignStart="@id/podcast_episode_recycler_header_country"
+        android:layout_alignEnd="@id/podcast_episode_recycler_header_country"
+        android:layout_alignTop="@id/podcast_episode_recycler_header_country"
+        android:layout_alignBottom="@id/podcast_episode_recycler_header_country"
+        />
+
+    <TextView
+        android:id="@+id/podcast_episode_recycler_header_country"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_below="@id/podcast_episode_recycler_header_artwork"
+        android:layout_toRightOf="@id/podcast_episode_recycler_header_genre_background"
+        android:paddingLeft="8dp"
+        android:paddingRight="8dp"
+        android:paddingTop="4dp"
+        android:paddingBottom="4dp"
+        android:layout_marginTop="16dp"
+        android:layout_marginLeft="16dp"
+        android:textColor="@color/white"
+        android:textStyle="bold"
+        android:text="@{podcast.country}"
+        />
+
+    <ImageView
+        android:layout_width="match_parent"
+        android:layout_height="1dp"
+        android:src="@color/black"
+        android:layout_alignParentBottom="true"
+        />
+
+</RelativeLayout>

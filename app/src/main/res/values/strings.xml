@@ -1,0 +1,6 @@
+<resources>
+    <string name="app_name">Linn Podcast Radio</string>
+    <string name="description">Description</string>
+    <string name="top_10_podcasts">Top 10 Podcasts</string>
+    <string name="no_results">No Results</string>
+</resources>
