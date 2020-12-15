@@ -12,7 +12,7 @@ import androidx.recyclerview.widget.RecyclerView;
 import com.example.linnpodcastradio.R;
 import com.example.linnpodcastradio.model.Podcast;
 import com.example.linnpodcastradio.model.PodcastEpisode;
-import com.example.linnpodcastradio.tools.MP3Player;
+import com.example.linnpodcastradio.tools.PodcastPlayer;
 
 import java.util.List;
 
@@ -21,11 +21,13 @@ public class PodcastEpisodesRecyclerAdapter extends RecyclerView.Adapter<Recycle
     private static final int TYPE_ITEM = 1;
     private List<PodcastEpisode> episodes;
     private RecyclerView recyclerView;
-    private MP3Player mp3Player;
+    private PodcastPlayer podcastPlayer;
+    private Podcast podcast;
 
-    public PodcastEpisodesRecyclerAdapter(RecyclerView recyclerView, MP3Player mp3Player) {
+    public PodcastEpisodesRecyclerAdapter(RecyclerView recyclerView, Podcast podcast,PodcastPlayer podcastPlayer) {
         this.recyclerView = recyclerView;
-        this.mp3Player = mp3Player;
+        this.podcast = podcast;
+        this.podcastPlayer = podcastPlayer;
     }
 
     public void setItems(List<PodcastEpisode> episodes){
@@ -42,35 +44,34 @@ public class PodcastEpisodesRecyclerAdapter extends RecyclerView.Adapter<Recycle
         }
         else{
             View view = LayoutInflater.from(parent.getContext()).inflate(R.layout.podcast_episode_recycler_item, parent, false);
-            view.setOnClickListener(new View.OnClickListener() {
-                @Override
-                public void onClick(View v) {
-                    int pos = recyclerView.getChildAdapterPosition(v);
-                    PodcastEpisode episode = episodes.get(pos);
-                    if(!episode.isStarted()){
-                        mp3Player.stop();
-                        mp3Player.startEpisode(episode);
-                    }
-                    else{
-                        if(episode.isPlaying()){
-                            mp3Player.pause();
-                        }
-                        else{
-                            mp3Player.play();
-                        }
-                    }
-                    notifyDataSetChanged();
-                }
-            });
+            view.setOnClickListener(podcastOnClickListener);
             return new ItemViewHolder(view);
         }
     }
 
+    private final View.OnClickListener podcastOnClickListener = new View.OnClickListener() {
+        @Override
+        public void onClick(View v) {
+            int pos = recyclerView.getChildAdapterPosition(v) - 1;
+            PodcastEpisode episode = episodes.get(pos);
+            if(!episode.isStarted()){
+                podcastPlayer.startEpisode(episode);
+            }
+            else{
+                if(episode.isPlaying()){
+                    podcastPlayer.pause();
+                }
+                else{
+                    podcastPlayer.play();
+                }
+            }
+            notifyDataSetChanged();
+        }
+    };
+
     @Override
     public void onBindViewHolder(@NonNull RecyclerView.ViewHolder holder, int position) {
-        PodcastEpisode episode = episodes.get(position);
         if(holder instanceof HeaderViewHolder){
-            Podcast podcast = episode.getPodcast();
             HeaderViewHolder headerViewHolder = (HeaderViewHolder) holder;
             headerViewHolder.artist.setText(podcast.getArtistName());
             headerViewHolder.title.setText(podcast.getTrackName());
@@ -84,6 +85,7 @@ public class PodcastEpisodesRecyclerAdapter extends RecyclerView.Adapter<Recycle
             }
         }
         else{
+            PodcastEpisode episode = episodes.get(position - 1);
             ItemViewHolder itemViewHolder = (ItemViewHolder) holder;
             itemViewHolder.title.setText(episode.getTitle());
             itemViewHolder.pubDate.setText(episode.getPubDate());
@@ -109,7 +111,7 @@ public class PodcastEpisodesRecyclerAdapter extends RecyclerView.Adapter<Recycle
         return TYPE_ITEM;
     }
 
-    public class HeaderViewHolder extends RecyclerView.ViewHolder{
+    public static class HeaderViewHolder extends RecyclerView.ViewHolder{
         private ImageView artwork;
         private TextView title;
         private TextView artist;
@@ -126,7 +128,7 @@ public class PodcastEpisodesRecyclerAdapter extends RecyclerView.Adapter<Recycle
         }
     }
 
-    public class ItemViewHolder extends RecyclerView.ViewHolder{
+    public static class ItemViewHolder extends RecyclerView.ViewHolder{
         private TextView title;
         private TextView pubDate;
         private ImageView playButton;

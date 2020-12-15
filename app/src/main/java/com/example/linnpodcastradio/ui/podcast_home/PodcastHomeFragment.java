@@ -1,10 +1,14 @@
 package com.example.linnpodcastradio.ui.podcast_home;
 
+import android.content.Context;
+import android.net.ConnectivityManager;
+import android.net.NetworkInfo;
 import android.os.Bundle;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.SearchView;
+import android.widget.Toast;
 
 import androidx.databinding.DataBindingUtil;
 import androidx.fragment.app.Fragment;
@@ -20,9 +24,11 @@ import com.example.linnpodcastradio.viewmodel.PodcastViewModel;
 
 import java.util.List;
 
+import static androidx.core.content.ContextCompat.getSystemService;
+
 public class PodcastHomeFragment extends Fragment {
     private PodcastViewModel viewModel;
-    private PodcastTopTenRecyclerAdapter podcastRecyclerAdapter;
+    private PodcastHomeRecyclerAdapter podcastRecyclerAdapter;
     private SwipeRefreshLayout swipeRefreshLayout;
     private SearchView searchView;
 
@@ -38,18 +44,18 @@ public class PodcastHomeFragment extends Fragment {
         setupSearchView(view);
         setupObservers();
         setupSwipeRefresh(view);
+        checkNetworkConnection();
         return view;
     }
 
     private void setupRecycler(View view){
         RecyclerView recyclerView = view.findViewById(R.id.podcast_home_recycler);
-        podcastRecyclerAdapter = new PodcastTopTenRecyclerAdapter(recyclerView, viewModel,getFragmentManager());
+        podcastRecyclerAdapter = new PodcastHomeRecyclerAdapter(recyclerView, viewModel,getFragmentManager());
         recyclerView.setAdapter(podcastRecyclerAdapter);
     }
 
     private void setupSearchView(View view){
         searchView = view.findViewById(R.id.podcast_home_search_view);
-        searchView.setIconified(false);
         searchView.setOnQueryTextListener(new SearchView.OnQueryTextListener() {
             @Override
             public boolean onQueryTextSubmit(String query) {
@@ -87,7 +93,9 @@ public class PodcastHomeFragment extends Fragment {
                     podcastRecyclerAdapter.setItems(viewModel.getTopPodcasts());
                 }
                 else{
-                    podcastRecyclerAdapter.setItems(podcasts);
+                    if(!podcasts.isEmpty()){
+                        podcastRecyclerAdapter.setItems(podcasts);
+                    }
                 }
             }
         });
@@ -99,8 +107,43 @@ public class PodcastHomeFragment extends Fragment {
             @Override
             public void onRefresh() {
                 swipeRefreshLayout.setRefreshing(false);
-                viewModel.refresh();
+                if(isNetworkOnline()){
+                    viewModel.refresh();
+                }
+                else{
+                    Toast.makeText(getContext(),"Please connect to a network and refresh", Toast.LENGTH_SHORT).show();
+                }
             }
         });
+    }
+
+    private void checkNetworkConnection(){
+        if(isNetworkOnline()){
+            viewModel.refresh();
+        }
+        else{
+            Toast.makeText(getContext(),"Please connect to a network and refresh", Toast.LENGTH_SHORT).show();
+        }
+    }
+
+    public boolean isNetworkOnline() {
+        boolean status=false;
+        try{
+            ConnectivityManager cm = (ConnectivityManager) getSystemService(requireContext(),ConnectivityManager.class);
+            NetworkInfo netInfo = cm.getNetworkInfo(0);
+            if (netInfo != null && netInfo.getState()==NetworkInfo.State.CONNECTED) {
+                status= true;
+            }
+            else {
+                netInfo = cm.getNetworkInfo(1);
+                if(netInfo!=null && netInfo.getState()==NetworkInfo.State.CONNECTED)
+                    status= true;
+            }
+        }
+        catch(Exception e){
+            e.printStackTrace();
+            return false;
+        }
+        return status;
     }
 }

@@ -7,11 +7,11 @@ import com.example.linnpodcastradio.model.PodcastEpisode;
 
 import java.io.IOException;
 
-public class MP3Player implements MediaPlayer.OnCompletionListener, MediaPlayer.OnPreparedListener, MediaPlayer.OnBufferingUpdateListener {
+public class PodcastPlayer implements MediaPlayer.OnCompletionListener, MediaPlayer.OnPreparedListener, MediaPlayer.OnBufferingUpdateListener {
     private MediaPlayer mediaPlayer;
     private PodcastEpisode episode;
 
-    public MP3Player(){
+    public PodcastPlayer(){
         mediaPlayer = new MediaPlayer();
     }
 

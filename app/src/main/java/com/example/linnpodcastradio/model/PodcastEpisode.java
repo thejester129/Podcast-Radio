@@ -4,7 +4,6 @@ public class PodcastEpisode {
     private Podcast podcast;
     private String title;
     private String mp3Link;
-    private int durationInSeconds;
     private boolean isStarted;
     private boolean isPlaying;
     private String pubDate;
@@ -51,20 +50,6 @@ public class PodcastEpisode {
 
     public void setPlaying(boolean playing) {
         isPlaying = playing;
-    }
-
-    public int getDurationInSeconds() {
-        return durationInSeconds;
-    }
-
-    public void setDurationInSeconds(int durationInSeconds) {
-        this.durationInSeconds = durationInSeconds;
-    }
-
-    public String getDurationInMinutesAndSeconds() {
-        int minutes = durationInSeconds / 60;
-        int seconds = durationInSeconds % 60;
-        return minutes + ":" + seconds;
     }
 
     public String getPubDate() {

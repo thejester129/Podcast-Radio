@@ -18,14 +18,14 @@ import com.example.linnpodcastradio.viewmodel.PodcastViewModel;
 
 import java.util.List;
 
-public class PodcastTopTenRecyclerAdapter extends RecyclerView.Adapter<PodcastTopTenRecyclerAdapter.ViewHolder>{
+public class PodcastHomeRecyclerAdapter extends RecyclerView.Adapter<PodcastHomeRecyclerAdapter.ViewHolder>{
 
     private List<Podcast> podcasts;
     private RecyclerView recyclerView;
     private FragmentManager fragmentManager;
     private PodcastViewModel viewModel;
 
-    public PodcastTopTenRecyclerAdapter(RecyclerView recyclerView, PodcastViewModel viewModel, FragmentManager fragmentManager) {
+    public PodcastHomeRecyclerAdapter(RecyclerView recyclerView, PodcastViewModel viewModel, FragmentManager fragmentManager) {
         this.recyclerView = recyclerView;
         this.fragmentManager = fragmentManager;
         this.viewModel = viewModel;
@@ -38,18 +38,18 @@ public class PodcastTopTenRecyclerAdapter extends RecyclerView.Adapter<PodcastTo
 
     @NonNull
     @Override
-    public PodcastTopTenRecyclerAdapter.ViewHolder onCreateViewHolder(@NonNull ViewGroup parent, int viewType) {
+    public PodcastHomeRecyclerAdapter.ViewHolder onCreateViewHolder(@NonNull ViewGroup parent, int viewType) {
         View view = LayoutInflater.from(parent.getContext()).inflate(R.layout.podcast_recycler_item, parent, false);
         view.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
                 int pos = recyclerView.getChildAdapterPosition(v);
                 Podcast podcast = podcasts.get(pos);
-                openPodcastInfoDialog(podcast);
                 viewModel.openPodcast(podcast);
+                openPodcastInfoDialog(podcast);
             }
         });
-        PodcastTopTenRecyclerAdapter.ViewHolder holder = new PodcastTopTenRecyclerAdapter.ViewHolder(view);
+        PodcastHomeRecyclerAdapter.ViewHolder holder = new PodcastHomeRecyclerAdapter.ViewHolder(view);
         return holder;
     }
 
@@ -59,7 +59,7 @@ public class PodcastTopTenRecyclerAdapter extends RecyclerView.Adapter<PodcastTo
     }
 
     @Override
-    public void onBindViewHolder(@NonNull PodcastTopTenRecyclerAdapter.ViewHolder holder, int position) {
+    public void onBindViewHolder(@NonNull PodcastHomeRecyclerAdapter.ViewHolder holder, int position) {
         Podcast podcast = podcasts.get(position);
         String string = podcast.getPosition() + ".";
         holder.position.setText(string);

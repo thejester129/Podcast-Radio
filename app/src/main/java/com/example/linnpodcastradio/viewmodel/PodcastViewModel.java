@@ -1,218 +1,75 @@
 package com.example.linnpodcastradio.viewmodel;
 
-import android.graphics.Bitmap;
-import android.graphics.BitmapFactory;
-import android.os.AsyncTask;
-
 import androidx.lifecycle.MutableLiveData;
+import androidx.lifecycle.Observer;
 import androidx.lifecycle.ViewModel;
 
 import com.example.linnpodcastradio.model.Podcast;
 import com.example.linnpodcastradio.model.PodcastEpisode;
-import com.example.linnpodcastradio.tools.HttpHandler;
-import com.example.linnpodcastradio.tools.PodcastEpisodeHandler;
-import com.example.linnpodcastradio.tools.PodcastFeedHandler;
-import com.fasterxml.jackson.databind.ObjectMapper;
+import com.example.linnpodcastradio.repository.PodcastRepository;
 
-import org.json.JSONArray;
-import org.json.JSONException;
-import org.json.JSONObject;
-import org.xml.sax.InputSource;
-
-import java.io.IOException;
-import java.net.URL;
 import java.util.ArrayList;
 import java.util.List;
 
-import javax.xml.parsers.SAXParser;
-import javax.xml.parsers.SAXParserFactory;
-
 public class PodcastViewModel extends ViewModel {
-    private final static String TOP_TEN_URL = "https://rss.itunes.apple.com/api/v1/us/podcasts/top-podcasts/all/10/explicit.rss";
-    private final static String LOOKUP_URL = "https://itunes.apple.com/lookup?id=";
+
     private final static String SEARCH_URL = "https://itunes.apple.com/search?term=";
+    private PodcastRepository podcastRepository;
     private MutableLiveData<List<Podcast>> liveTopPodcasts = new MutableLiveData<>();
-    private MutableLiveData<List<Podcast>> liveSearchPodcasts = new MutableLiveData<>();
-    private List<Podcast> topPodcasts;
-    private List<Podcast> searchPodcasts;
-    private MutableLiveData<List<PodcastEpisode>> currentPodcastEpisodes = new MutableLiveData<>();
+    private MutableLiveData<List<Podcast>> liveSearchResults = new MutableLiveData<>();
     private MutableLiveData<Boolean> podcastsLoading = new MutableLiveData<>();
     private MutableLiveData<Boolean> currentPodcastEpisodesLoading = new MutableLiveData<>();
+    private MutableLiveData<List<PodcastEpisode>> liveCurrentEpisodes = new MutableLiveData<>();
+    private List<Podcast> topPodcasts;
 
     public PodcastViewModel() {
-        refresh();
+        podcastRepository = new PodcastRepository();
+        createObservers();
     }
 
     public void refresh(){
         topPodcasts = new ArrayList<>();
         podcastsLoading.setValue(true);
-        new ReadTopPodcastIDsTask().execute();
+        podcastRepository.getLiveTopPodcasts(liveTopPodcasts);
     }
 
-    private final class ReadTopPodcastIDsTask extends AsyncTask<Void, Void, List<String>> {
-        List<String> result;
-        @Override
-        protected List<String> doInBackground(Void... voids) {
-            try {
-                URL url = new URL(TOP_TEN_URL);
-                SAXParserFactory factory = SAXParserFactory.newInstance();
-                SAXParser saxParser = factory.newSAXParser();
-                PodcastFeedHandler podcastFeedHandler = new PodcastFeedHandler();
-                saxParser.parse(new InputSource(url.openStream()), podcastFeedHandler);
-                result = podcastFeedHandler.getPodcastIDs();
-            } catch (Exception e) {
-                e.printStackTrace();
+    private void createObservers(){
+        liveTopPodcasts.observeForever(new Observer<List<Podcast>>() {
+            @Override
+            public void onChanged(List<Podcast> podcasts) {
+                if(!podcasts.isEmpty()){
+                    podcastsLoading.setValue(false);
+                    topPodcasts = podcasts;
+                }
             }
-            return result;
-        }
-        @Override
-        protected void onPostExecute(List<String> podcastIDs) {
-            readPodcastJSONObjects(podcastIDs);
-            super.onPostExecute(podcastIDs);
-        }
-    }
-
-    private void readPodcastJSONObjects(List<String> podcastIDs){
-        for(String podcastID : podcastIDs){
-            new ReadPodcastJSONTask().execute(podcastID);
-        }
-    }
-
-    private final class ReadPodcastJSONTask extends AsyncTask<String, Void, Podcast> {
-        @Override
-        protected Podcast doInBackground(String... params) {
-            String podcastID = params[0];
-            String url = LOOKUP_URL + podcastID;
-            JSONObject podcastJSON = getPodcastJSON(url);
-            return convertJSONToPodcastObject(podcastJSON);
-        }
-        @Override
-        protected void onPostExecute(Podcast podcast) {
-            podcast.setPosition(topPodcasts.size() + 1);
-            topPodcasts.add(podcast);
-            liveTopPodcasts.setValue(topPodcasts);
-            podcastsLoading.setValue(false);
-            new GetArtworkBitmapTask().execute(podcast);
-            super.onPostExecute(podcast);
-        }
-    }
-
-    private JSONObject getPodcastJSON(String url){
-        JSONObject podcastObject = new JSONObject();
-        HttpHandler sh = new HttpHandler();
-        String jsonStr = sh.makeServiceCall(url);
-        System.out.println("JSON String " + jsonStr);
-        if (jsonStr != null) {
-            try {
-                JSONObject jsonObj = new JSONObject(jsonStr);
-                JSONArray jsonArray = (JSONArray) jsonObj.get("results");
-                podcastObject = jsonArray.getJSONObject(0);
+        });
+        liveCurrentEpisodes.observeForever(new Observer<List<PodcastEpisode>>() {
+            @Override
+            public void onChanged(List<PodcastEpisode> episodes) {
+                if(!episodes.isEmpty()){
+                    currentPodcastEpisodesLoading.setValue(false);
+                }
             }
-            catch (final JSONException e) {
-                System.out.println( "Json parsing error: " + e.getMessage());
+        });
+        liveSearchResults.observeForever(new Observer<List<Podcast>>() {
+            @Override
+            public void onChanged(List<Podcast> podcasts) {
+                if(!podcasts.isEmpty()){
+                    podcastsLoading.setValue(false);
+                }
             }
-        }
-        else {
-            System.out.println("Couldn't get json from server.");
-        }
-        return podcastObject;
-    }
-
-    private JSONArray getPodcastListJSON(String url){
-        JSONArray jsonArray = new JSONArray();
-        HttpHandler sh = new HttpHandler();
-        String jsonStr = sh.makeServiceCall(url);
-        if (jsonStr != null) {
-            try {
-                JSONObject jsonObj = new JSONObject(jsonStr);
-                jsonArray = (JSONArray) jsonObj.get("results");
-            }
-            catch (final JSONException e) {
-                System.out.println( "Json parsing error: " + e.getMessage());
-            }
-        }
-        else {
-            System.out.println("Couldn't get json from server.");
-        }
-        return jsonArray;
-    }
-
-    private Podcast convertJSONToPodcastObject(JSONObject podcastJSON){
-        Podcast podcast = new Podcast();
-        ObjectMapper mapper = new ObjectMapper();
-        try {
-            podcast = mapper.readValue(podcastJSON.toString(), Podcast.class);
-        } catch (IOException e) {
-            e.printStackTrace();
-            System.out.println("Failed to convert podcast JSON");
-        }
-        return podcast;
-    }
-
-    private final class GetArtworkBitmapTask extends AsyncTask<Podcast, Void, Bitmap> {
-        Podcast podcast;
-        Bitmap bitmap = null;
-        @Override
-        protected Bitmap doInBackground(Podcast... params) {
-            try {
-                podcast = params[0];
-                URL url = new URL(podcast.getArtworkUrl());
-                bitmap = BitmapFactory.decodeStream(url.openConnection().getInputStream());
-            }
-            catch (IOException e) {
-                System.out.println("Error setting podcast artwork " + e.getMessage());
-            }
-            return bitmap;
-        }
-
-        @Override
-        protected void onPostExecute(Bitmap bitmap) {
-            podcast.setBitmap(bitmap);
-            liveTopPodcasts.setValue(topPodcasts);
-            super.onPostExecute(bitmap);
-        }
+        });
     }
 
     public void openPodcast(Podcast podcast){
-        currentPodcastEpisodes.setValue(new ArrayList<>());
         currentPodcastEpisodesLoading.setValue(true);
-        new ReadPodcastEpisodesTask().execute(podcast);
-    }
-
-    private final class ReadPodcastEpisodesTask extends AsyncTask<Podcast, Void, List<PodcastEpisode>> {
-        private List<PodcastEpisode> result;
-        private Podcast podcast;
-        @Override
-        protected List<PodcastEpisode> doInBackground(Podcast... params) {
-            podcast = params[0];
-            try {
-                SAXParserFactory factory = SAXParserFactory.newInstance();
-                SAXParser saxParser = factory.newSAXParser();
-                PodcastEpisodeHandler podcastEpisodeHandler = new PodcastEpisodeHandler();
-                URL url = new URL(podcast.getFeedUrl());
-                saxParser.parse(new InputSource(url.openStream()), podcastEpisodeHandler);
-                result = podcastEpisodeHandler.getPodcastEpisodes();
-            } catch (Exception e) {
-                e.printStackTrace();
-            }
-            return result;
-        }
-
-        @Override
-        protected void onPostExecute(List<PodcastEpisode> episodes) {
-            for(PodcastEpisode episode : episodes){
-                episode.setPodcast(podcast);
-            }
-            currentPodcastEpisodes.setValue(result);
-            currentPodcastEpisodesLoading.setValue(false);
-            super.onPostExecute(episodes);
-        }
+        podcastRepository.getPodcastEpisodes(podcast, liveCurrentEpisodes);
     }
 
     public void searchPodcasts(String query){
-        String link = getSearchLink(query);
-        new SearchPodcastJSONTask().execute(link);
         podcastsLoading.setValue(true);
+        String link = getSearchLink(query);
+        podcastRepository.getLiveSearchResults(link, liveSearchResults);
     }
 
     private String getSearchLink(String query){
@@ -226,74 +83,21 @@ public class PodcastViewModel extends ViewModel {
         return SEARCH_URL + searchString + "&entity=podcast";
     }
 
-    private final class SearchPodcastJSONTask extends AsyncTask<String, Void, List<Podcast>> {
-        List<Podcast> result = new ArrayList<>();
-        @Override
-        protected List<Podcast> doInBackground(String... params) {
-            String url = params[0];
-            JSONArray podcastJSONArray = getPodcastListJSON(url);
-            for(int i = 0; i < podcastJSONArray.length(); i++){
-                try {
-                    JSONObject podcastJSON = podcastJSONArray.getJSONObject(i);
-                    Podcast podcast = convertJSONToPodcastObject(podcastJSON);
-                    podcast.setPosition(i+1);
-                    result.add(podcast);
-                } catch (JSONException e) {
-                    e.printStackTrace();
-                }
-            }
-            return result;
-        }
-        @Override
-        protected void onPostExecute(List<Podcast> podcasts) {
-            searchPodcasts = podcasts;
-            liveSearchPodcasts.setValue(searchPodcasts);
-            podcastsLoading.setValue(false);
-            for(Podcast podcast : podcasts){
-                new GetSearchArtworkBitmapTask().execute(podcast);
-            }
-            super.onPostExecute(podcasts);
-        }
-    }
-
-    private final class GetSearchArtworkBitmapTask extends AsyncTask<Podcast, Void, Bitmap> {
-        Podcast podcast;
-        Bitmap bitmap = null;
-        @Override
-        protected Bitmap doInBackground(Podcast... params) {
-            try {
-                podcast = params[0];
-                URL url = new URL(podcast.getArtworkUrl());
-                bitmap = BitmapFactory.decodeStream(url.openConnection().getInputStream());
-            }
-            catch (IOException e) {
-                System.out.println("Error setting podcast artwork " + e.getMessage());
-            }
-            return bitmap;
-        }
-
-        @Override
-        protected void onPostExecute(Bitmap bitmap) {
-            podcast.setBitmap(bitmap);
-            liveSearchPodcasts.setValue(searchPodcasts);
-            super.onPostExecute(bitmap);
-        }
-    }
-
     public void clearSearch(){
-        searchPodcasts = new ArrayList<>();
-        liveSearchPodcasts.setValue(searchPodcasts);
+        List<Podcast> searchResults = new ArrayList<>();
+        liveSearchResults.setValue(searchResults);
     }
 
     public MutableLiveData<List<Podcast>> getLiveTopPodcasts() {
         return liveTopPodcasts;
     }
+
     public MutableLiveData<List<Podcast>> getLiveSearchPodcasts() {
-        return liveSearchPodcasts;
+        return liveSearchResults;
     }
 
-    public MutableLiveData<List<PodcastEpisode>> getCurrentPodcastEpisodes() {
-        return currentPodcastEpisodes;
+    public MutableLiveData<List<PodcastEpisode>> getLiveCurrentEpisodes() {
+        return liveCurrentEpisodes;
     }
 
     public MutableLiveData<Boolean> getPodcastsLoading() {
@@ -307,7 +111,6 @@ public class PodcastViewModel extends ViewModel {
     public List<Podcast>getTopPodcasts(){
         return topPodcasts;
     }
-
 
 }
 

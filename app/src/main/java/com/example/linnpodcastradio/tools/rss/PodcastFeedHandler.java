@@ -1,4 +1,4 @@
-package com.example.linnpodcastradio.tools;
+package com.example.linnpodcastradio.tools.rss;
 
 import org.xml.sax.helpers.DefaultHandler;
 import org.xml.sax.Attributes;
@@ -25,20 +25,11 @@ public class PodcastFeedHandler extends DefaultHandler {
     @Override
     public void startElement(String uri, String localName, String qName, Attributes attributes) throws SAXException {
         this.elementStack.push(qName);
-
-//        if(qName.equals("item")){
-//            String id = "";
-//            this.objectStack.push(id);
-//        }
     }
 
     @Override
     public void endElement(String uri, String localName, String qName) throws SAXException {
         this.elementStack.pop();
-        if (qName.equals("item")) {
-//            String id = this.objectStack.pop();
-//            podcastIDs.add(id);
-        }
     }
 
     @Override
@@ -54,7 +45,12 @@ public class PodcastFeedHandler extends DefaultHandler {
 
     private String parseId(String guid){
         String[] split = guid.split("id");
-        System.out.println("Podcast id " + split[1]);
-        return split[1];
+        if(split.length > 1){
+            return split[1];
+        }
+        else{
+            System.out.println("Error parsing id" + split);
+            return "";
+        }
     }
 }

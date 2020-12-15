@@ -15,7 +15,6 @@ public class MainActivity extends AppCompatActivity {
         if(savedInstanceState == null){
             openHomeFragment();
         }
-
     }
 
     private void openHomeFragment(){

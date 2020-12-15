@@ -1,4 +1,4 @@
-package com.example.linnpodcastradio.tools;
+package com.example.linnpodcastradio.tools.rss;
 
 import com.example.linnpodcastradio.model.PodcastEpisode;
 
@@ -10,7 +10,7 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Stack;
 
-public class PodcastEpisodeHandler extends DefaultHandler {
+public class PodcastEpisodeFeedHandler extends DefaultHandler {
     private List<PodcastEpisode> podcastEpisodes = new ArrayList<>();
     private Stack<String> elementStack = new Stack();
     private Stack<PodcastEpisode> episodeStack = new Stack();

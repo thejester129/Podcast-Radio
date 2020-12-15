@@ -17,7 +17,6 @@ public class Podcast {
     private Bitmap bitmap;
     private String primaryGenreName;
     private String country;
-    public List<PodcastEpisode> episodes;
 
     public Podcast(){
     }
@@ -46,7 +45,7 @@ public class Podcast {
         this.trackName = trackName;
     }
 
-    public String getArtworkUrl() {
+    public String getArtworkLink() {
         return artworkUrl100;
     }
 
@@ -88,9 +87,5 @@ public class Podcast {
 
     public String getCountry() {
         return country;
-    }
-
-    public void setCountry(String country) {
-        this.country = country;
     }
 }

@@ -30,7 +30,7 @@
         android:layout_toRightOf="@id/podcast_episode_recycler_header_artwork"
         android:layout_marginLeft="32dp"
         android:layout_marginRight="32dp"
-        android:textSize="24sp"
+        android:textSize="20sp"
         android:textStyle="bold"
         android:text="@{podcast.trackName}"
         />
