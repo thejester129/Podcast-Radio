@@ -5,8 +5,8 @@
         <variable
             name="viewmodel"
             type="com.example.linnpodcastradio.viewmodel.PodcastViewModel" />
-
     </data>
+
     <androidx.swiperefreshlayout.widget.SwipeRefreshLayout
         android:id="@+id/podcast_home_swipe_refresh"
         xmlns:android="http://schemas.android.com/apk/res/android"

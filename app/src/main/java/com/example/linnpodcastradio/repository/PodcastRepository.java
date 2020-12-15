@@ -34,9 +34,11 @@ public class PodcastRepository {
     private List<Podcast> searchResults;
     private List<PodcastEpisode> currentPodcastEpisodes;
     private PodcastJSONHandler podcastJSONHandler;
+    private ArtworkRepository artworkRepository;
 
     public PodcastRepository(){
         initPodcastJSONParser();
+        artworkRepository = new ArtworkRepository();
     }
 
     private void initPodcastJSONParser(){
@@ -95,24 +97,9 @@ public class PodcastRepository {
                 podcast.setPosition(topPodcasts.size() + 1);
                 topPodcasts.add(podcast);
                 liveTopPodcasts.setValue(topPodcasts);
-                new GetArtworkBitmapTask().execute(podcast);
+                artworkRepository.loadPodcastArtwork(podcast, liveTopPodcasts, topPodcasts);
             }
             super.onPostExecute(podcast);
-        }
-    }
-
-    private final class GetArtworkBitmapTask extends AsyncTask<Podcast, Void, Bitmap> {
-        Podcast podcast;
-        @Override
-        protected Bitmap doInBackground(Podcast... params) {
-            podcast = params[0];
-            return getBitmapFromLink(podcast.getArtworkLink());
-        }
-        @Override
-        protected void onPostExecute(Bitmap bitmap) {
-            podcast.setBitmap(bitmap);
-            liveTopPodcasts.setValue(topPodcasts);
-            super.onPostExecute(bitmap);
         }
     }
 
@@ -173,42 +160,9 @@ public class PodcastRepository {
         protected void onPostExecute(List<Podcast> podcasts) {
             searchResults = podcasts;
             liveSearchResults.setValue(searchResults);
-            loadSearchResultArtworks();
+            artworkRepository.loadSearchResultArtworks(searchResults, liveSearchResults);
             super.onPostExecute(podcasts);
         }
-    }
-
-    private void loadSearchResultArtworks(){
-        for(Podcast podcast : searchResults){
-            new GetSearchArtworkBitmapTask().execute(podcast);
-        }
-    }
-
-    private final class GetSearchArtworkBitmapTask extends AsyncTask<Podcast, Void, Bitmap> {
-        Podcast podcast;
-        @Override
-        protected Bitmap doInBackground(Podcast... params) {
-            podcast = params[0];
-            return getBitmapFromLink(podcast.getArtworkLink());
-        }
-        @Override
-        protected void onPostExecute(Bitmap bitmap) {
-            podcast.setBitmap(bitmap);
-            liveSearchResults.setValue(searchResults);
-            super.onPostExecute(bitmap);
-        }
-    }
-
-    private Bitmap getBitmapFromLink(String link){
-        Bitmap bitmap = null;
-        try{
-            URL url = new URL(link);
-            bitmap = BitmapFactory.decodeStream(url.openConnection().getInputStream());
-        }
-        catch (IOException e) {
-            System.out.println("Error setting podcast artwork " + e.getMessage());
-        }
-        return bitmap;
     }
 
 }

@@ -13,7 +13,7 @@ import androidx.recyclerview.widget.RecyclerView;
 
 import com.example.linnpodcastradio.model.Podcast;
 import com.example.linnpodcastradio.R;
-import com.example.linnpodcastradio.ui.podcast_episodes.PodcastInfoDialog;
+import com.example.linnpodcastradio.ui.podcast_info.PodcastInfoDialog;
 import com.example.linnpodcastradio.viewmodel.PodcastViewModel;
 
 import java.util.List;

@@ -44,9 +44,12 @@ public class PodcastFeedHandler extends DefaultHandler {
     }
 
     private String parseId(String guid){
+        String id;
         String[] split = guid.split("id");
         if(split.length > 1){
-            return split[1];
+            id = split[1];
+            split = id.split("\\?");
+            return split[0];
         }
         else{
             System.out.println("Error parsing id" + split);

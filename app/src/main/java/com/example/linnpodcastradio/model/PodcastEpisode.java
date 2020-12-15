@@ -12,6 +12,12 @@ public class PodcastEpisode {
 
     }
 
+    public PodcastEpisode(String title, String mp3Link, String pubDate) {
+        this.title = title;
+        this.mp3Link = mp3Link;
+        this.pubDate = pubDate;
+    }
+
     public Podcast getPodcast() {
         return podcast;
     }

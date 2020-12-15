@@ -1,0 +1,53 @@
+{
+    "resultCount": 1,
+    "results": [
+        {
+            "artistId": 920682569,
+            "artistName": "Gimlet",
+            "artistViewUrl": "https://itunes.apple.com/us/artist/gimlet-media/920682569?mt=2&uo=4",
+            "artworkUrl100": "https://is3-ssl.mzstatic.com/image/thumb/Music128/v4/57/17/98/571798bf-d07c-15f4-1546-0cfa936c6412/source/100x100bb.jpg",
+            "artworkUrl30": "https://is3-ssl.mzstatic.com/image/thumb/Music128/v4/57/17/98/571798bf-d07c-15f4-1546-0cfa936c6412/source/30x30bb.jpg",
+            "artworkUrl60": "https://is3-ssl.mzstatic.com/image/thumb/Music128/v4/57/17/98/571798bf-d07c-15f4-1546-0cfa936c6412/source/60x60bb.jpg",
+            "artworkUrl600": "https://is3-ssl.mzstatic.com/image/thumb/Music128/v4/57/17/98/571798bf-d07c-15f4-1546-0cfa936c6412/source/600x600bb.jpg",
+            "collectionCensoredName": "The Habitat",
+            "collectionExplicitness": "explicit",
+            "collectionHdPrice": 0,
+            "collectionId": 1369393780,
+            "collectionName": "The Habitat",
+            "collectionPrice": 0.0,
+            "collectionViewUrl": "https://itunes.apple.com/us/podcast/the-habitat/id1369393780?mt=2&uo=4",
+            "contentAdvisoryRating": "Explicit",
+            "country": "USA",
+            "currency": "USD",
+            "feedUrl": "https://feeds.megaphone.fm/thehabitat",
+            "genreIds": [
+                "1315",
+                "26",
+                "1318",
+                "1324",
+                "1302"
+            ],
+            "genres": [
+                "Science & Medicine",
+                "Podcasts",
+                "Technology",
+                "Society & Culture",
+                "Personal Journals"
+            ],
+            "kind": "podcast",
+            "primaryGenreName": "Science & Medicine",
+            "releaseDate": "2018-04-18T07:30:00Z",
+            "trackCensoredName": "The Habitat",
+            "trackCount": 9,
+            "trackExplicitness": "explicit",
+            "trackHdPrice": 0,
+            "trackHdRentalPrice": 0,
+            "trackId": 1369393780,
+            "trackName": "The Habitat",
+            "trackPrice": 0.0,
+            "trackRentalPrice": 0,
+            "trackViewUrl": "https://itunes.apple.com/us/podcast/the-habitat/id1369393780?mt=2&uo=4",
+            "wrapperType": "track"
+        }
+    ]
+}

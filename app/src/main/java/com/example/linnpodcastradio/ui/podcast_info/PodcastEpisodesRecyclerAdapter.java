@@ -1,4 +1,4 @@
-package com.example.linnpodcastradio.ui.podcast_episodes;
+package com.example.linnpodcastradio.ui.podcast_info;
 
 import android.view.LayoutInflater;
 import android.view.View;
