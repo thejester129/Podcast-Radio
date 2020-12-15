@@ -64,6 +64,7 @@ public class PodcastInfoDialog extends DialogFragment {
             @Override
             public void onClick(View v) {
                 podcastPlayer.stop();
+                podcastPlayer.release();
                 dismiss();
             }
         });
@@ -79,7 +80,7 @@ public class PodcastInfoDialog extends DialogFragment {
         viewModel.getLiveCurrentEpisodes().observe(this, new Observer<List<PodcastEpisode>>() {
             @Override
             public void onChanged(List<PodcastEpisode> episodes) {
-                if(!episodes.isEmpty()){
+                if(episodes != null && !episodes.isEmpty()){
                     adapter.setItems(episodes);
                 }
             }
@@ -89,6 +90,7 @@ public class PodcastInfoDialog extends DialogFragment {
     @Override
     public void onCancel(DialogInterface dialog){
         podcastPlayer.stop();
+        podcastPlayer.release();
         super.onCancel(dialog);
     }
 

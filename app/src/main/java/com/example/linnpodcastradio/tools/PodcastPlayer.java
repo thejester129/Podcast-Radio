@@ -51,6 +51,10 @@ public class PodcastPlayer implements MediaPlayer.OnCompletionListener, MediaPla
         }
     }
 
+    public void release(){
+        mediaPlayer.release();
+    }
+
     @Override
     public void onPrepared(MediaPlayer mediaplayer) {
         if(!mediaPlayer.isPlaying()){

@@ -27,6 +27,7 @@ import javax.xml.parsers.SAXParserFactory;
 public class PodcastRepository {
     private final static String TOP_TEN_URL = "https://rss.itunes.apple.com/api/v1/us/podcasts/top-podcasts/all/10/explicit.rss";
     private final static String LOOKUP_URL = "https://itunes.apple.com/lookup?id=";
+    private final static String SEARCH_URL = "https://itunes.apple.com/search?term=";
     private MutableLiveData<List<Podcast>> liveTopPodcasts;
     private MutableLiveData<List<Podcast>> liveSearchResults;
     private MutableLiveData<List<PodcastEpisode>> liveCurrentPodcastEpisodes;
@@ -106,7 +107,7 @@ public class PodcastRepository {
     public MutableLiveData<List<PodcastEpisode>> getPodcastEpisodes(Podcast podcast, MutableLiveData<List<PodcastEpisode>> liveCurrentPodcastEpisodes){
         this.liveCurrentPodcastEpisodes = liveCurrentPodcastEpisodes;
         currentPodcastEpisodes = new ArrayList<>();
-        liveCurrentPodcastEpisodes.setValue(currentPodcastEpisodes);
+        liveCurrentPodcastEpisodes.setValue(null);
         new ReadPodcastEpisodesTask().execute(podcast);
         return liveCurrentPodcastEpisodes;
     }
@@ -143,9 +144,21 @@ public class PodcastRepository {
     public MutableLiveData<List<Podcast>> getLiveSearchResults(String query, MutableLiveData<List<Podcast>> liveSearchResults){
         this.liveSearchResults = liveSearchResults;
         searchResults = new ArrayList<>();
-        liveSearchResults.setValue(searchResults);
-        new SearchPodcastJSONTask().execute(query);
+        //liveSearchResults.setValue(searchResults);
+        String link = getSearchLink(query);
+        new SearchPodcastJSONTask().execute(link);
         return liveSearchResults;
+    }
+
+    private String getSearchLink(String query){
+        String [] searchTerms = query.split(" ");
+        StringBuilder searchString = new StringBuilder();
+        for(int i = 0; i < searchTerms.length - 1; i++){
+            searchString.append(searchTerms[i]);
+            searchString.append("+");
+        }
+        searchString.append(searchTerms[searchTerms.length - 1]);
+        return SEARCH_URL + searchString + "&entity=podcast";
     }
 
     private final class SearchPodcastJSONTask extends AsyncTask<String, Void, List<Podcast>> {

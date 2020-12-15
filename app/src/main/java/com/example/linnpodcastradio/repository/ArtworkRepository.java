@@ -17,6 +17,7 @@ public class ArtworkRepository {
     MutableLiveData<List<Podcast>>liveSearchResults;
     List<Podcast>topPodcasts;
     List<Podcast>searchResults;
+
     public ArtworkRepository(){
 
     }

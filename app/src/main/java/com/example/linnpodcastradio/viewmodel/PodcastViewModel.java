@@ -13,7 +13,6 @@ import java.util.List;
 
 public class PodcastViewModel extends ViewModel {
 
-    private final static String SEARCH_URL = "https://itunes.apple.com/search?term=";
     private PodcastRepository podcastRepository;
     private MutableLiveData<List<Podcast>> liveTopPodcasts = new MutableLiveData<>();
     private MutableLiveData<List<Podcast>> liveSearchResults = new MutableLiveData<>();
@@ -46,7 +45,7 @@ public class PodcastViewModel extends ViewModel {
         liveCurrentEpisodes.observeForever(new Observer<List<PodcastEpisode>>() {
             @Override
             public void onChanged(List<PodcastEpisode> episodes) {
-                if(!episodes.isEmpty()){
+                if(episodes != null){
                     currentPodcastEpisodesLoading.setValue(false);
                 }
             }
@@ -68,19 +67,7 @@ public class PodcastViewModel extends ViewModel {
 
     public void searchPodcasts(String query){
         podcastsLoading.setValue(true);
-        String link = getSearchLink(query);
-        podcastRepository.getLiveSearchResults(link, liveSearchResults);
-    }
-
-    private String getSearchLink(String query){
-        String [] searchTerms = query.split(" ");
-        StringBuilder searchString = new StringBuilder();
-        for(int i = 0; i < searchTerms.length - 1; i++){
-            searchString.append(searchTerms[i]);
-            searchString.append("+");
-        }
-        searchString.append(searchTerms[searchTerms.length - 1]);
-        return SEARCH_URL + searchString + "&entity=podcast";
+        podcastRepository.getLiveSearchResults(query, liveSearchResults);
     }
 
     public void clearSearch(){

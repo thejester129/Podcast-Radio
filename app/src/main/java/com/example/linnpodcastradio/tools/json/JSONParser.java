@@ -15,7 +15,6 @@ public class JSONParser {
     public JSONArray readJSONArray(String url, String arrayName){
         JSONArray jsonArray = new JSONArray();
         String jsonStr = httpHandler.makeServiceCall(url);
-        System.out.println("JSON String " + jsonStr);
         if (jsonStr != null) {
             try {
                 JSONObject jsonObj = new JSONObject(jsonStr);
